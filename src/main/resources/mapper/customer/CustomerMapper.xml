@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neusoft.bookstore.customer.mapper.CustomerMapper">
+    <resultMap id="mycurstomer" type="com.neusoft.bookstore.customer.model.Customer">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="user_acct" property="userAcct" jdbcType="VARCHAR"/>
+        <result column="user_pwd" property="userPwd" jdbcType="VARCHAR"/>
+        <result column="admin_flag" property="adminFlag" jdbcType="INTEGER" />
+        <result column="id_card" property="idCard" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="INTEGER" />
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="score" property="score" jdbcType="INTEGER" />
+        <result column="client_id" property="clientId" jdbcType="INTEGER" />
+        <result column="is_deleted" property="Deleted" jdbcType="INTEGER" />
+        <result column="sort_no" property="sortNo" jdbcType="INTEGER" />
+        <result column="gmt_create" property="gmtCreate" jdbcType="VARCHAR"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="gmt_modified" property="gmtModified" jdbcType="VARCHAR"/>
+        <result column="last_modified_by" property="lastModifiedBy" jdbcType="VARCHAR"/>
+        <result column="version" property="version" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="mycustomerlist">
+        user_name,user_acct,user_pwd,admin_flag,id_card,sex,
+phone,email,remark,score,client_id,is_deleted,sort_no,gmt_create,
+create_by,gmt_modified,last_modified_by,version
+    </sql>
+<!--    查询账号是否存在-->
+    <select id="listUserAcctCount" resultType="int">
+        select count(*)
+        from t_sys_customer
+        where user_acct=#{userAcct}
+        and is_deleted=0
+    </select>
+<!--查询手机号是否已注册-->
+    <select id="listPhoneAcctCount" resultType="int">
+        select count(*)
+        from t_sys_customer
+        where phone=#{phone}
+        and is_deleted=0
+    </select>
+
+    <insert id="saveCustomer">
+        insert into  t_sys_customer(<include refid="mycustomerlist"/>)
+values (#{userName},#{userAcct},#{userPwd},0,#{idCard},#{sex},#{phone},#{email},#{remark},0,#{clientId},0,0
+,now(),#{createBy},now(),#{lastModifiedBy},1)
+    </insert>
+
+    <select id="loginCustomer"  resultMap="mycurstomer">
+        select id,<include refid="mycustomerlist"/>
+        from  t_sys_customer
+        where is_deleted = 0
+        and user_acct=#{userAcct}
+    </select>
+    <update id="registCustomerpwd">
+        update t_sys_customer
+        set user_pwd = #{userPwd}
+        where phone = #{phone}
+    </update>
+    <delete id="deleteCustomer">
+        delete from t_sys_customer
+        where id in
+        <foreach collection="idList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+    <update id="updateCustomer">
+        update t_sys_customer
+        set user_acct = #{userAcct}, user_name = #{userName},sex = #{sex},phone=#{phone},email=#{email}
+        where id = #{id}
+    </update>
+    <select id="getCustomerById" resultMap="mycurstomer">
+        select id,<include refid="mycustomerlist"/>
+        from t_sys_customer
+        where id=#{id}
+    </select>
+    <select id="listCustomerByPage" resultMap="mycurstomer">
+        select
+        id,<include refid="mycustomerlist"/>
+        from t_sys_customer
+        where is_deleted = 0
+        <if test="null != userName">
+            and user_name like concat('%',#{userName},'%')
+        </if>
+        <if test="null != userAcct">
+            and user_acct like concat('%',#{userAcct},'%')
+        </if>
+    </select>
+    <update id="setCustomerScore">
+        update t_sys_customer
+        set score=#{score}
+        where id=#{id}
+    </update>
+</mapper>

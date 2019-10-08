@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neusoft.bookstore.user.mapper.UserMapper">
+
+    <!--可重复使用-->
+    <sql id="all_name">
+        _id,username
+    </sql>
+
+<!--    &lt;!&ndash;程序中的命名与数据库不一致时&ndash;&gt;-->
+<!--    <resultMap id="BaseResultMap" type="com.neusoft.bookstore.user.model.User">-->
+<!--        <id column="_id" property="id" jdbcType="BIGINT"/>-->
+<!--        <result column="username" property="username" jdbcType="VARCHAR"/>-->
+<!--    </resultMap>-->
+
+<!--    多对一-->
+    <resultMap id="BaseResultMap" type="com.neusoft.bookstore.user.model.User">
+        <id column="_id" property="id" jdbcType="BIGINT"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <!--多对壹-->
+        <association property="dept" javaType="com.neusoft.bookstore.user.model.Dept">
+            <id column="_id" property="id" jdbcType="BIGINT"/>
+            <result column="dept_name" property="deptName" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <!--    一对多-->
+    <resultMap id="DeptBaseResultMap" type="com.neusoft.bookstore.user.model.Dept">
+        <id column="_id" property="id" jdbcType="BIGINT"/>
+        <result column="dept_name" property="deptName" jdbcType="VARCHAR"/>
+
+       <collection property="users" ofType="com.neusoft.bookstore.user.model.User">
+           <id column="_id" property="id" jdbcType="BIGINT"/>
+           <result column="username" property="username" jdbcType="VARCHAR"/>
+       </collection>
+        <!--一对多-->
+
+    </resultMap>
+
+    <insert id="saveUser" parameterType="com.neusoft.bookstore.user.model.User">
+        insert into users (username)
+        values (#{username})
+    </insert>
+
+    <update id="updateUser" >
+        update users
+        set username=#{username}
+        where _id=#{id}
+    </update>
+
+    <delete id="deleteUser">
+        delete from users
+        where _id=#{id}
+    </delete>
+
+    <insert id="allsaveUser">
+        insert into users (_id,username)
+        values
+        <foreach collection="users" separator="," item="item">
+        (#{item.id},#{item.username})
+        </foreach>
+    </insert>
+
+    <delete id="deleteUsers">
+        delete from users
+        where _id in
+        <foreach collection="tttt" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+    
+    <select id="getUser" resultMap="BaseResultMap">
+        select
+        <include refid="all_name"/>
+        from users
+        <where>
+            <if test="id !=null">
+                _id=#{id}
+            </if>
+            <if test="username !=null">
+                and username=#{username}
+            </if>
+        </where>
+    </select>
+
+    <select id="getUsers" resultMap="BaseResultMap">
+        select
+        <include refid="all_name"/>
+        from users
+        where _id in
+        <foreach collection="list" item="item" open="("  separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <!--  多对一（查询）  -->
+    <select id="listManyToOne" resultMap="BaseResultMap">
+        select
+          u._id,u.username,d._id,d.dept_name
+         from users u,t_dept d
+        where u.dept_id=d._id
+    </select>
+
+<!--    一对多 -->
+    <select id="listOneToMany" resultMap="DeptBaseResultMap">
+        select  u._id,u.username,d._id,d.dept_name
+        from  t_dept d left join users u
+         on d._id=u.dept_id
+    </select>
+</mapper>

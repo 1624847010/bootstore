@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neusoft.bookstore.sdxl.mapper.SdxlMapper">
+    <sql id="all">
+        user_name,user_acct,user_password,user_email
+    </sql>
+    <resultMap id="resultPeople" type="com.neusoft.bookstore.sdxl.model.People">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="user_password" property="userPassword" jdbcType="VARCHAR"/>
+        <result column="user_acct" property="userAcct" jdbcType="VARCHAR"/>
+        <result column="user_email" property="userEmail" jdbcType="VARCHAR"/>
+        <result column="createAt" property="userAt" jdbcType="VARCHAR"/>
+    </resultMap>
+    <insert id="saveMany">
+        insert into t_sys_user(
+        <include refid="all"/>
+        ,create_at
+        )
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.userName},#{item.userAcct},#{item.userPassword},#{item.userEmail},NOW())
+        </foreach>
+    </insert>
+    <delete id="deleteMany">
+        delete from t_sys_user
+        where user_name in
+        <foreach collection="list" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </delete>
+    <select id="selectAll" resultMap="resultPeople">
+        select id,
+        <include refid="all"/>
+        ,DATE_FORMAT(create_at,'%Y-%m-%d %T') as createAt
+        from t_sys_user
+        where user_name in
+        <foreach collection="list" item="item" separator="," open="(" close=")" >
+            #{item}
+        </foreach>
+        order by id desc
+    </select>
+    <select id="listSysUserByPage" resultMap="resultPeople">
+        select
+        id,
+        <include refid="all"/>
+        ,DATE_FORMAT(create_at,'%Y-%m-%d %T') as createAt
+        from
+        t_sys_user
+        limit ${starData},${pageSize}
+    </select>
+    <select id="listUserCount" resultType="INT">
+        select count(id)
+        from t_sys_user
+    </select>
+
+    <select id="listUserPageInfo" resultMap="resultPeople">
+        select
+        id,
+        <include refid="all"/>
+        ,DATE_FORMAT(create_at,'%Y-%m-%d %T') as createAt
+        from
+        t_sys_user
+    </select>
+</mapper>
