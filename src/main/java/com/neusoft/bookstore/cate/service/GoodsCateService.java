@@ -12,4 +12,10 @@ public interface GoodsCateService {
     Response listOneLevelGoods();
 
     Response listTwoLevelGoods(GoodsCate goodsCate);
+
+    Response listGoods(GoodsCate goodsCate);
+
+    Response updateGoods(GoodsCate goodsCate);
+
+    Response deleteGoods(GoodsCate goodsCate);
 }

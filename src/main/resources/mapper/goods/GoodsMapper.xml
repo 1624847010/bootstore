@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neusoft.bookstore.goods.mapper.GoodsMapper">
+<!--    <resultMap id="GoodsResultMap" type="com.neusoft.bookstore.goods.model.Goods" >-->
+<!--        <id column="id" property="id" jdbcType="BIGINT" />-->
+<!--        <result column="sku_name" property="skuName" jdbcType="VARCHAR" />-->
+<!--        <result column="cost_price" property="costPrice" jdbcType="DECIMAL" />-->
+<!--        <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />-->
+<!--        <result column="sale_count" property="saleCount" jdbcType="INTEGER" />-->
+<!--        <result column="detail" property="detail" jdbcType="VARCHAR" />-->
+<!--        <result column="putaway_time" property="putawayTime" jdbcType="TIMESTAMP" />-->
+<!--        <result column="lower_time" property="lowerTime" jdbcType="TIMESTAMP" />-->
+<!--        <result column="status" property="status" jdbcType="INTEGER" />-->
+<!--        <result column="browse_count" property="browseCount" jdbcType="BIGINT" />-->
+<!--        <result column="author" property="author" jdbcType="VARCHAR" />-->
+<!--        <result column="advertising" property="advertising" jdbcType="VARCHAR" />-->
+<!--        <result column="isbn" property="isbn" jdbcType="VARCHAR" />-->
+<!--        <result column="stock" property="stock" jdbcType="INTEGER" />-->
+<!--        <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />-->
+<!--        <result column="sort_no" property="sortNo" jdbcType="INTEGER" />-->
+<!--        <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />-->
+<!--        <result column="create_by" property="createBy" jdbcType="VARCHAR" />-->
+<!--        <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />-->
+<!--        <result column="last_modified_by" property="lastModifiedBy" jdbcType="VARCHAR" />-->
+<!--        <result column="version" property="version" jdbcType="INTEGER" />-->
+<!--        <result column="one_cate_id" property="oneCateId" jdbcType="varbinary" />-->
+<!--        <result column="two_cate_id" property="twoCateId" jdbcType="varbinary" />-->
+<!--    </resultMap>-->
+
+    <sql id="Goods_Column_List" >
+         sku_name, cost_price, sale_price, sale_count,detail, putaway_time, lower_time, status,
+        browse_count, author, advertising, isbn, stock, is_deleted, sort_no, gmt_create,
+        create_by, gmt_modified, last_modified_by, version,one_cate_id,two_cate_id
+    </sql>
+
+    <insert id="saveGoods">
+        insert into t_goods_sku(
+        <include refid="Goods_Column_List"/>
+        )
+        values (#{skuName},
+        #{costPrice},
+        #{salePrice},
+        #{saleCount},
+        #{detail},
+        #{putawayTime},
+        #{lowerTime},
+        1,
+        #{browseCount},
+        #{author},
+        #{advertising},
+        #{isbn},
+        #{stock},
+        0,
+        0,
+        now(),
+        #{createBy},
+        now(),
+        #{lastModifiedBy},
+        1,
+        #{oneCateId},
+        #{twoCateId})
+    </insert>
+
+    <select id="existGoods" resultType="int">
+        select count(*)
+        from t_goods_sku
+        where one_cate_id=#{id} or two_cate_id = #{id}
+    </select>
+
+    <select id="existName" resultType="int">
+        select count(*)
+        from t_goods_sku
+        where sku_name=#{skuName}
+        <if test="null != id">
+            and id != #{id}
+        </if>
+    </select>
+</mapper>

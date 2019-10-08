@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 @Mapper
 public interface GoodsCateMapper {
-    List<GoodsCate> listGoods();
+    List<GoodsCate> listAllGoods();
 
     int saveGoods(GoodsCate goodsCate);
 
@@ -18,4 +18,10 @@ public interface GoodsCateMapper {
     List<GoodsCate> listOneLevelGoods();
 
     List<GoodsCate> listTwoLevelGoods(Long id);
+
+    GoodsCate listGoods(GoodsCate goodsCate);
+
+    void updateMyGoods(GoodsCate goodsCate);
+
+    void deleteMyGoods(GoodsCate goodsCate);
 }

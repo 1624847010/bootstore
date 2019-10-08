@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Api(description = "商品分类管理")
-@RequestMapping("goods")
+@RequestMapping("goodscate")
 public class GoodsCateController {
     @Autowired
     GoodsCateService goodsCateService;
@@ -46,5 +46,20 @@ public class GoodsCateController {
     @PostMapping("/listTwoLevelGoods")
     public Response listTwoLevelGoods(@RequestBody GoodsCate goodsCate){
         return goodsCateService.listTwoLevelGoods(goodsCate);
+    }
+    @ApiOperation("根据id查询分类详情")
+    @PostMapping("/listGoods")
+    public Response listGoods(@RequestBody GoodsCate goodsCate){
+        return goodsCateService.listGoods(goodsCate);
+    }
+    @ApiOperation("修改分类")
+    @PostMapping("/updateGoods")
+    public Response updateGoods(@RequestBody GoodsCate goodsCate){
+        return goodsCateService.updateGoods(goodsCate);
+    }
+    @ApiOperation("删除分类")
+    @PostMapping("/deleteGoods")
+    public Response deleteGoods(@RequestBody GoodsCate goodsCate){
+        return goodsCateService.deleteGoods(goodsCate);
     }
 }

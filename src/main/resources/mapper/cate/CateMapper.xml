@@ -3,6 +3,18 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.neusoft.bookstore.cate.mapper.GoodsCateMapper">
+
+    <update id="updateMyGoods">
+        update t_goods_cate
+        set cate_name=#{cateName},remark=#{remark}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteMyGoods">
+        delete from t_goods_cate
+        where id=#{id}
+    </delete>
+
     <resultMap id="resultGoods" type="com.neusoft.bookstore.cate.model.GoodsCate">
         <id column="id" property="id"/>
         <result column="cate_name" property="cateName"/>
@@ -15,6 +27,7 @@
         cate_name,parent_cate_id,cate_level,remark,is_deleted,sort_no,gmt_create,create_by,
         gmt_modified,last_modified_by,version
     </sql>
+
     <insert id="saveGoods">
         insert into t_goods_cate
         (<include refid="Goods"/>)
@@ -23,6 +36,7 @@
         now(),#{createBy},1
         )
     </insert>
+
     <select id="getGoodsNameCount" resultType="int">
         select count(*)
         from t_goods_cate
@@ -36,19 +50,23 @@
         set cate_name=#{cateName},remark=#{remark},gmt_modified=now(),last_modified_by=#{lastModifiedBy}
         where id=#{id}
     </update>
+
     <select id="listChildGoods" resultType="int">
         select count(*)
         from t_goods_cate
         where parent_cate_id=#{id}
     </select>
+
     <delete id="deleteGoods">
         delete from t_goods_cate
         where id = #{id}
     </delete>
-    <select id="listGoods" resultMap="resultGoods">
+
+    <select id="listAllGoods" resultMap="resultGoods">
         select id,<include refid="Goods"/>
          from t_goods_cate
     </select>
+
     <select id="listOneLevelGoods" resultMap="resultGoods">
         select id,cate_name
         from t_goods_cate
@@ -60,4 +78,13 @@
         from t_goods_cate
         where parent_cate_id =#{id}
     </select>
+
+    <select id="listGoods" resultMap="resultGoods">
+        select <include refid="Goods"/>
+        from t_goods_cate
+        where id=#{id}
+    </select>
+
+
+
 </mapper>

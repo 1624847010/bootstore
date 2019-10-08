@@ -5,6 +5,7 @@ import com.neusoft.bookstore.cate.mapper.GoodsCateMapper;
 import com.neusoft.bookstore.cate.model.GoodsCate;
 import com.neusoft.bookstore.cate.model.GoodsTree;
 import com.neusoft.bookstore.cate.service.GoodsCateService;
+import com.neusoft.bookstore.goods.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,10 @@ import java.util.List;
 @Service
 public class GoodsCateServiceImpl implements GoodsCateService {
     @Autowired
-    GoodsCateMapper goodsCateMapper;
+    private GoodsCateMapper goodsCateMapper;
+
+    @Autowired
+    private GoodsService goodsService;
 
     /**
      * 新增商品分类
@@ -43,7 +47,7 @@ public class GoodsCateServiceImpl implements GoodsCateService {
     @Override
     public Response listGoodsTree() {
         //查询所有商品
-        List<GoodsCate> listGoods= goodsCateMapper.listGoods();
+        List<GoodsCate> listGoods= goodsCateMapper.listAllGoods();
         //定义商品分类树
         GoodsTree goodsTree=new GoodsTree();
         this.recursionGoodsTree(listGoods,goodsTree,0L);
@@ -94,5 +98,45 @@ public class GoodsCateServiceImpl implements GoodsCateService {
     public Response listTwoLevelGoods(GoodsCate goodsCate) {
         List<GoodsCate> list= goodsCateMapper.listTwoLevelGoods(goodsCate.getId());
         return Response.ok(list,"查询成功");
+    }
+
+    /**
+     * 查询商品详情
+     * @param goodsCate
+     * @return
+     */
+    @Override
+    public Response listGoods(GoodsCate goodsCate) {
+        GoodsCate goods=goodsCateMapper.listGoods(goodsCate);
+        return Response.ok(goods,"查询成功");
+    }
+
+    /**
+     * 修改
+     * @param goodsCate
+     * @return
+     */
+    @Override
+    public Response updateGoods(GoodsCate goodsCate) {
+        //判断分类下是否含有商品，有则无法修改
+        boolean b = goodsService.existGoods(goodsCate);
+        if (b) {
+            return Response.error("该目录下存在商品无法修改");
+        }
+        //开始修改
+        goodsCateMapper.updateMyGoods(goodsCate);
+        return Response.ok("修改成功");
+    }
+
+    @Override
+    public Response deleteGoods(GoodsCate goodsCate) {
+        //判断分类下是否含有商品，有则无法删除
+        boolean b = goodsService.existGoods(goodsCate);
+        if (b) {
+            return Response.error("该目录下存在商品无法删除");
+        }
+        //开始删除
+        goodsCateMapper.deleteMyGoods(goodsCate);
+        return Response.ok("删除成功");
     }
 }
