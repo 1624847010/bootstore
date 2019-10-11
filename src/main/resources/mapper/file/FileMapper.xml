@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neusoft.bookstore.file.mapper.FileMapper">
+    <resultMap id="fileResult" type="com.neusoft.bookstore.file.model.File">
+        <id column="id" property="id"/>
+        <result column="file_Name" property="fileName"/>
+        <result column="file_url" property="fileUrl"/>
+        <result column="business_id" property="businessId"/>
+        <result column="business_type" property="businessType"/>
+    </resultMap>
+<!--    保存文件-->
+    <insert id="saveFile">
+        insert into  t_file(
+            file_name,file_url,business_id,business_type ,is_deleted,sort_no,
+            gmt_create,create_by,gmt_modified,last_modified_by,version
+            )
+        values
+        <foreach collection="files" item="item" separator=",">
+            (#{item.fileName},#{item.fileUrl},#{id},1,0,0,now(),#{createBy},now(),#{lastModifiedBy},1)
+        </foreach>
+    </insert>
+<!--    查询-->
+    <select id="listFile" resultMap="fileResult">
+        select id,file_name,file_url,business_id,business_type
+        from t_file
+        where business_id = #{businessId}
+    </select>
+
+<!--    修改图片-->
+<!--    <update id="updateFile">-->
+<!--        update t_file-->
+<!--        set file_url=#{fileUrl}-->
+<!--        where business_id = #{id}-->
+<!--    </update>-->
+</mapper>

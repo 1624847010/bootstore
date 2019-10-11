@@ -6,6 +6,8 @@ import com.neusoft.bookstore.goods.model.Goods;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Mapper
 @Repository
 public interface GoodsMapper {
@@ -14,4 +16,14 @@ public interface GoodsMapper {
     int existGoods(GoodsCate goodsCate);
 
     int existName(Goods goods);
+
+    Goods listGoodsById(Long id);
+
+    int updateGoods(Goods goods);
+
+    List<Goods> listGoodsByPage(Goods goods);
+
+    int updateGoodsStatus(Goods goods);
+
+    int delGoods(Goods goods);
 }

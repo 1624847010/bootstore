@@ -1,12 +1,15 @@
 package com.neusoft.bookstore.goods.model;
 
+import com.neusoft.bookstore.base.PageReqest;
+import com.neusoft.bookstore.file.model.File;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
-public class Goods {
+public class Goods extends PageReqest {
     private Long id;
 
     private String skuName;
@@ -52,4 +55,6 @@ public class Goods {
     private Long oneCateId;
 
     private Long twoCateId;
+
+    private List<File> files;
 }

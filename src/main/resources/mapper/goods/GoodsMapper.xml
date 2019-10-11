@@ -3,31 +3,31 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.neusoft.bookstore.goods.mapper.GoodsMapper">
-<!--    <resultMap id="GoodsResultMap" type="com.neusoft.bookstore.goods.model.Goods" >-->
-<!--        <id column="id" property="id" jdbcType="BIGINT" />-->
-<!--        <result column="sku_name" property="skuName" jdbcType="VARCHAR" />-->
-<!--        <result column="cost_price" property="costPrice" jdbcType="DECIMAL" />-->
-<!--        <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />-->
-<!--        <result column="sale_count" property="saleCount" jdbcType="INTEGER" />-->
-<!--        <result column="detail" property="detail" jdbcType="VARCHAR" />-->
-<!--        <result column="putaway_time" property="putawayTime" jdbcType="TIMESTAMP" />-->
-<!--        <result column="lower_time" property="lowerTime" jdbcType="TIMESTAMP" />-->
-<!--        <result column="status" property="status" jdbcType="INTEGER" />-->
-<!--        <result column="browse_count" property="browseCount" jdbcType="BIGINT" />-->
-<!--        <result column="author" property="author" jdbcType="VARCHAR" />-->
-<!--        <result column="advertising" property="advertising" jdbcType="VARCHAR" />-->
-<!--        <result column="isbn" property="isbn" jdbcType="VARCHAR" />-->
-<!--        <result column="stock" property="stock" jdbcType="INTEGER" />-->
-<!--        <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />-->
-<!--        <result column="sort_no" property="sortNo" jdbcType="INTEGER" />-->
-<!--        <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />-->
-<!--        <result column="create_by" property="createBy" jdbcType="VARCHAR" />-->
-<!--        <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />-->
-<!--        <result column="last_modified_by" property="lastModifiedBy" jdbcType="VARCHAR" />-->
-<!--        <result column="version" property="version" jdbcType="INTEGER" />-->
-<!--        <result column="one_cate_id" property="oneCateId" jdbcType="varbinary" />-->
-<!--        <result column="two_cate_id" property="twoCateId" jdbcType="varbinary" />-->
-<!--    </resultMap>-->
+    <resultMap id="GoodsResultMap" type="com.neusoft.bookstore.goods.model.Goods" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="sku_name" property="skuName" jdbcType="VARCHAR" />
+        <result column="cost_price" property="costPrice" jdbcType="DECIMAL" />
+        <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
+        <result column="sale_count" property="saleCount" jdbcType="INTEGER" />
+        <result column="detail" property="detail" jdbcType="VARCHAR" />
+        <result column="putaway_time" property="putawayTime" jdbcType="TIMESTAMP" />
+        <result column="lower_time" property="lowerTime" jdbcType="TIMESTAMP" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="browse_count" property="browseCount" jdbcType="BIGINT" />
+        <result column="author" property="author" jdbcType="VARCHAR" />
+        <result column="advertising" property="advertising" jdbcType="VARCHAR" />
+        <result column="isbn" property="isbn" jdbcType="VARCHAR" />
+        <result column="stock" property="stock" jdbcType="INTEGER" />
+        <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />
+        <result column="sort_no" property="sortNo" jdbcType="INTEGER" />
+        <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+        <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+        <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+        <result column="last_modified_by" property="lastModifiedBy" jdbcType="VARCHAR" />
+        <result column="version" property="version" jdbcType="INTEGER" />
+        <result column="one_cate_id" property="oneCateId" jdbcType="BIGINT" />
+        <result column="two_cate_id" property="twoCateId" jdbcType="BIGINT" />
+    </resultMap>
 
     <sql id="Goods_Column_List" >
          sku_name, cost_price, sale_price, sale_count,detail, putaway_time, lower_time, status,
@@ -35,7 +35,7 @@
         create_by, gmt_modified, last_modified_by, version,one_cate_id,two_cate_id
     </sql>
 
-    <insert id="saveGoods">
+    <insert id="saveGoods" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         insert into t_goods_sku(
         <include refid="Goods_Column_List"/>
         )
@@ -44,8 +44,8 @@
         #{salePrice},
         #{saleCount},
         #{detail},
-        #{putawayTime},
-        #{lowerTime},
+        null,
+        null,
         1,
         #{browseCount},
         #{author},
@@ -66,15 +66,69 @@
     <select id="existGoods" resultType="int">
         select count(*)
         from t_goods_sku
-        where one_cate_id=#{id} or two_cate_id = #{id}
+        where is_deleted = 0
+        and one_cate_id=#{id} or two_cate_id = #{id}
     </select>
 
     <select id="existName" resultType="int">
         select count(*)
         from t_goods_sku
-        where sku_name=#{skuName}
+        where is_deleted = 0
+        and sku_name=#{skuName}
         <if test="null != id">
             and id != #{id}
         </if>
     </select>
+
+    <select id="listGoodsById" resultMap="GoodsResultMap" >
+        select <include refid="Goods_Column_List"/>
+        from t_goods_sku
+        where is_deleted = 0
+        and id = #{id}
+    </select>
+
+    <update id="updateGoods" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        update t_goods_sku
+        set sku_name=#{skuName},cost_price=#{costPrice},sale_price=#{salePrice},isbn=#{isbn},advertising=#{advertising},one_cate_id=#{oneCateId},two_cate_id=#{twoCateId}
+        where id = #{id}
+    </update>
+    <select id="listGoodsByPage" resultMap="GoodsResultMap">
+        select <include refid="Goods_Column_List"/>
+        from t_goods_sku
+        where is_deleted = 0
+--         商品名称
+        <if test="null != skuName">
+            and sku_name like concat('%',#{skuName},'%')
+        </if>
+--         商品状态
+        <if test="null != status">
+            and status like #{status}
+        </if>
+--         广告词
+        <if test="null != advertising">
+            and status like concat('%',#{advertising},'%')
+        </if>
+        order by putaway_time desc
+    </select>
+<!--    修改商品状态-->
+    <update id="updateGoodsStatus">
+        update  t_goods_sku
+        <set>
+            status = #{status},
+            <if test="status == 2">
+                putaway_time = now(),
+            </if>
+            <if test="status == 3">
+                lower_time = now(),
+            </if>
+            gmt_modified = now()
+        </set>
+        where  id=#{id}
+    </update>
+<!--    将商品废除-->
+    <update id="delGoods">
+         update  t_goods_sku
+        set  is_deleted = 1,gmt_modified = now()
+        where  id=#{id}
+    </update>
 </mapper>

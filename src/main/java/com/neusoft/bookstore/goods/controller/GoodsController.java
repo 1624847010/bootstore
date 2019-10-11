@@ -20,5 +20,29 @@ public class GoodsController {
     public Response saveGoods(@RequestBody Goods goods){
         return goodsService.saveGoods(goods);
     }
-
+    @ApiOperation(value = "根据id查询商品")
+    @PostMapping("/listGoodsById")
+    public Response listGoodsById(@RequestBody Goods goods){
+        return goodsService.listGoodsById(goods);
+    }
+    @ApiOperation(value = "sku分类查询商品")
+    @PostMapping("/listGoodsByPage")
+    public Response listGoodsByPage(@RequestBody Goods goods){
+        return goodsService.listGoodsByPage(goods);
+    }
+    @ApiOperation(value = "修改商品")
+    @PostMapping("/updateGoods")
+    public Response updateGoods(@RequestBody Goods goods){
+        return goodsService.updateGoods(goods);
+    }
+    @ApiOperation(value = "修改商品状态")
+    @PostMapping("/updateGoodsStatus")
+    public Response updateGoodsStatus(@RequestBody Goods goods){
+        return goodsService.updateGoodsStatus(goods);
+    }
+    @ApiOperation(value = "作废商品")
+    @PostMapping("/delGoods")
+    public Response delGoods(@RequestBody Goods goods){
+        return goodsService.delGoods(goods);
+    }
 }
