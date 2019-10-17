@@ -11,6 +11,7 @@ public class GoodsTree {
     private String name;
     private Integer level;
     private Long pid;
+    private String remark;
 
     private List<GoodsTree> child=new ArrayList<>();
 }

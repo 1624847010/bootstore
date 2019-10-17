@@ -34,7 +34,7 @@
     </select>
     <update id="updateMenu">
         update t_sys_menu
-        set menu_name=#{menuName},menu_url=#{menuUrl},remark=#{remark},gmt_modified=now(),last_modified_by=#{lastModifiedBy}
+        set menu_name=#{menuName},menu_url=#{menuUrl},remark=#{remark},gmt_modified=now(),last_modified_by=#{createBy}
         where id=#{id}
     </update>
     <select id="listChildMenu" resultType="int">

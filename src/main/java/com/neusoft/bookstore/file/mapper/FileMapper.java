@@ -12,8 +12,10 @@ import java.util.List;
 public interface FileMapper {
     //保存文件
     void saveFile(Goods goods);
-    //修改文件
-//    void updateFile(Goods goods);
     //查询
     List<File> listFile(File file);
+    //根据id删除文件
+    void deleteFile(File file);
+    //根据商品删除文件
+    void delFileByGoods(Goods goods);
 }

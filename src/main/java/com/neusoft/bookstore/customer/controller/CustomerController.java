@@ -1,9 +1,11 @@
 package com.neusoft.bookstore.customer.controller;
 
+import com.neusoft.bookstore.base.LoginResult;
 import com.neusoft.bookstore.base.Response;
 import com.neusoft.bookstore.base.VerifyCode;
 import com.neusoft.bookstore.customer.model.Customer;
 import com.neusoft.bookstore.customer.service.CustomerService;
+import com.neusoft.bookstore.utils.SessionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +56,13 @@ public class CustomerController {
     @ApiOperation(value = "用户登陆")
     @ResponseBody
     @PostMapping("/loginCustomer")
-    public Response loginCustomer(@RequestBody Customer customer){
-        return customerService.loginCustomer(customer);
+    public Response loginCustomer(HttpServletRequest request,@RequestBody Customer customer){
+        Response response = customerService.loginCustomer(customer);
+        if (null != response.getData()) {
+            LoginResult loginResult = (LoginResult)response.getData();
+            SessionUtil.setSession(request,loginResult);
+        }
+        return response;
     }
     @ApiOperation(value = "重置密码发送验证码")
     @ResponseBody
@@ -87,7 +94,8 @@ public class CustomerController {
     @ApiOperation(value = "删除用户")
     @ResponseBody
     @PostMapping("/deleteCustomer")
-    public Response deleteCustomer(@RequestParam(value = "idList") List<Long> idList){
+    public Response deleteCustomer(@RequestBody Customer customer){
+        List<Long> idList = customer.getIdList();
         return customerService.deleteCustomer(idList);
     }
     @ApiOperation(value = "修改用户")

@@ -2,6 +2,7 @@ package com.neusoft.bookstore.customer.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.neusoft.bookstore.base.LoginResult;
 import com.neusoft.bookstore.base.Response;
 import com.neusoft.bookstore.base.VerifyCode;
 import com.neusoft.bookstore.customer.model.Customer;
@@ -11,10 +12,7 @@ import com.neusoft.bookstore.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -161,7 +159,14 @@ public class CustomerServiceImpl implements CustomerService {
         if (!up1.equals(up2)) {
             return Response.error("密码错误");
         }
-        return Response.ok("登陆成功");
+        LoginResult loginResult = new LoginResult();
+        //用户id
+        loginResult.setUserId(cs.getId());
+        loginResult.setUserName(cs.getUserName());
+        UUID uuid = UUID.randomUUID();
+        String token = uuid.toString();
+        loginResult.setToken(token);
+        return Response.ok(loginResult,"登陆成功");
     }
     /**
      * 找回密码时判断手机号是否已注册
@@ -288,6 +293,11 @@ public class CustomerServiceImpl implements CustomerService {
         return Response.ok(customerPageInfo,"查询成功");
     }
 
+    /**
+     * 设置积分
+     * @param customer
+     * @return
+     */
     @Override
     public Response setCustomerScore(Customer customer) {
         if (null == customer.getId() || null == customer.getScore()) {

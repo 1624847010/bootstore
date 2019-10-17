@@ -2,6 +2,8 @@ package com.neusoft.bookstore.customer.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class Customer {
     private Long id;
@@ -31,4 +33,7 @@ public class Customer {
     private Integer PageNum;
     //每页展示的最大数目
     private Integer PageSize;
+
+    //删除时传入idList
+    private List<Long> idList;
 }

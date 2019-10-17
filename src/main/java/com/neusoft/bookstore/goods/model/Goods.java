@@ -56,5 +56,9 @@ public class Goods extends PageReqest {
 
     private Long twoCateId;
 
+    private Integer goodsType;
+
     private List<File> files;
+
+    private Integer flag;
 }

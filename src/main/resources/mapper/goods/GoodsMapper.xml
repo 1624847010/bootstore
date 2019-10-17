@@ -34,7 +34,7 @@
         browse_count, author, advertising, isbn, stock, is_deleted, sort_no, gmt_create,
         create_by, gmt_modified, last_modified_by, version,one_cate_id,two_cate_id
     </sql>
-
+<!--插入商品-->
     <insert id="saveGoods" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         insert into t_goods_sku(
         <include refid="Goods_Column_List"/>
@@ -55,21 +55,21 @@
         0,
         0,
         now(),
-        #{createBy},
+        "蒋鑫鑫",
         now(),
-        #{lastModifiedBy},
+        "蒋鑫鑫",
         1,
         #{oneCateId},
         #{twoCateId})
     </insert>
-
+<!--判断分类下是否存在商品-->
     <select id="existGoods" resultType="int">
         select count(*)
         from t_goods_sku
         where is_deleted = 0
         and one_cate_id=#{id} or two_cate_id = #{id}
     </select>
-
+<!--查询sku名字是否重复-->
     <select id="existName" resultType="int">
         select count(*)
         from t_goods_sku
@@ -79,19 +79,20 @@
             and id != #{id}
         </if>
     </select>
-
+<!--根据id查询商品列表-->
     <select id="listGoodsById" resultMap="GoodsResultMap" >
         select <include refid="Goods_Column_List"/>
         from t_goods_sku
         where is_deleted = 0
         and id = #{id}
     </select>
-
+<!--修改商品信息-->
     <update id="updateGoods" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         update t_goods_sku
         set sku_name=#{skuName},cost_price=#{costPrice},sale_price=#{salePrice},isbn=#{isbn},advertising=#{advertising},one_cate_id=#{oneCateId},two_cate_id=#{twoCateId}
         where id = #{id}
     </update>
+<!--    分页查询商品-->
     <select id="listGoodsByPage" resultMap="GoodsResultMap">
         select <include refid="Goods_Column_List"/>
         from t_goods_sku
@@ -110,6 +111,13 @@
         </if>
         order by putaway_time desc
     </select>
+<!--    查询带图片的商品-->
+    <select id="listAppGoodsByPage" resultMap="GoodsResultMap">
+       select sku_name,cost_price, sale_price, sale_count,detail, putaway_time, lower_time,status,
+        browse_count, author, advertising, isbn, stock,one_cate_id,two_cate_id,file_name,file_url,business_id from t_goods_sku
+        left join t_file on t_goods_sku.id = t_file.business_id
+        group by t_goods_sku.id
+    </select>
 <!--    修改商品状态-->
     <update id="updateGoodsStatus">
         update  t_goods_sku
@@ -125,10 +133,21 @@
         </set>
         where  id=#{id}
     </update>
-<!--    将商品废除-->
-    <update id="delGoods">
-         update  t_goods_sku
-        set  is_deleted = 1,gmt_modified = now()
-        where  id=#{id}
-    </update>
+<!--    将商品删除-->
+    <delete id="delGoods">
+        delete from t_goods_sku
+        where id = #{id}
+    </delete>
+<!--    查询商品在售状态-->
+    <select id="listGoodsStatus" parameterType="long" resultMap="GoodsResultMap">
+        select status
+        from t_goods_sku
+        where id = #{skuId}
+    </select>
+<!--    查询库存-->
+    <select id="listGoodsStock" parameterType="long" resultMap="GoodsResultMap">
+        select stock
+        from t_goods_sku
+        where id = #{skuId}
+    </select>
 </mapper>

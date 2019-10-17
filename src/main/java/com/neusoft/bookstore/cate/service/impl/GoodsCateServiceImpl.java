@@ -77,6 +77,7 @@ public class GoodsCateServiceImpl implements GoodsCateService {
         goodsTree.setLevel(goodsCate.getCateLevel());
         goodsTree.setName(goodsCate.getCateName());
         goodsTree.setPid(goodsCate.getParentCateId());
+        goodsTree.setRemark(goodsCate.getRemark());
     }
 
     /**

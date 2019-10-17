@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 //@RestController 为@responsebody与@Controller的合体
-@Api(value = "菜单相关controller")
+@Api(description = "菜单相关controller")
 @RestController
 @RequestMapping("/menu")
 public class MenuController {

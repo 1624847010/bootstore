@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neusoft.bookstore.shop.mapper.ShopMapper">
+    <sql id="shop_list">
+        sku_id, count,is_deleted,sort_no,gmt_create,create_by,gmt_modified,last_modified_by,version
+    </sql>
+    <insert id="saveShop">
+        insert into t_shop_car
+        (<include refid="shop_list"/>)
+        values (
+        #{skuId},#{count},0,0,now(),#{createBy},now(),#{lastModifiedBy},1
+        )
+    </insert>
+</mapper>

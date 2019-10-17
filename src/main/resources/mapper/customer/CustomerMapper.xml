@@ -46,8 +46,8 @@ create_by,gmt_modified,last_modified_by,version
 
     <insert id="saveCustomer">
         insert into  t_sys_customer(<include refid="mycustomerlist"/>)
-values (#{userName},#{userAcct},#{userPwd},0,#{idCard},#{sex},#{phone},#{email},#{remark},0,#{clientId},0,0
-,now(),#{createBy},now(),#{lastModifiedBy},1)
+values (#{userName},#{userAcct},#{userPwd},0,#{idCard},#{sex},#{phone},#{email},#{remark},#{score},#{clientId},0,0
+,now(),'蒋鑫鑫',now(),'蒋鑫鑫',1)
     </insert>
 
     <select id="loginCustomer"  resultMap="mycurstomer">
@@ -70,7 +70,7 @@ values (#{userName},#{userAcct},#{userPwd},0,#{idCard},#{sex},#{phone},#{email},
     </delete>
     <update id="updateCustomer">
         update t_sys_customer
-        set user_acct = #{userAcct}, user_name = #{userName},sex = #{sex},phone=#{phone},email=#{email}
+        set user_acct = #{userAcct}, user_name = #{userName},sex = #{sex},phone=#{phone},email=#{email},remark=#{remark},id_card=#{idCard},user_pwd=#{userPwd},score=#{score}
         where id = #{id}
     </update>
     <select id="getCustomerById" resultMap="mycurstomer">
@@ -82,7 +82,7 @@ values (#{userName},#{userAcct},#{userPwd},0,#{idCard},#{sex},#{phone},#{email},
         select
         id,<include refid="mycustomerlist"/>
         from t_sys_customer
-        where is_deleted = 0
+        where client_id = #{clientId}
         <if test="null != userName">
             and user_name like concat('%',#{userName},'%')
         </if>

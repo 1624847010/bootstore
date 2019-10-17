@@ -40,7 +40,7 @@ public class GoodsController {
     public Response updateGoodsStatus(@RequestBody Goods goods){
         return goodsService.updateGoodsStatus(goods);
     }
-    @ApiOperation(value = "作废商品")
+    @ApiOperation(value = "删除商品")
     @PostMapping("/delGoods")
     public Response delGoods(@RequestBody Goods goods){
         return goodsService.delGoods(goods);

@@ -6,7 +6,7 @@ import lombok.Data;
 public class GoodsCate {
     private Long id;
     private String cateName;
-    private Long ParentCateId;
+    private Long parentCateId;
     private Integer cateLevel;
     private String remark;
     private String createBy;

@@ -47,7 +47,7 @@
     </select>
     <update id="updateGoods">
         update t_goods_cate
-        set cate_name=#{cateName},remark=#{remark},gmt_modified=now(),last_modified_by=#{lastModifiedBy}
+        set cate_name=#{cateName},remark=#{remark},gmt_modified=now(),last_modified_by=#{createBy}
         where id=#{id}
     </update>
 

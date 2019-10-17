@@ -17,6 +17,10 @@ public interface GoodsService {
     Response listGoodsByPage(Goods goods);
     //修改商品状态
     Response updateGoodsStatus(Goods goods);
-    //将商品作废
+    //将商品删除
     Response delGoods(Goods goods);
+    //查询商品销售状态
+    int listGoodsStatus(Long skuId);
+    //查询商品库存
+    int listGoodsStock(Long skuId);
 }

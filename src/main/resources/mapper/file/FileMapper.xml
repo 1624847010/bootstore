@@ -7,31 +7,37 @@
         <id column="id" property="id"/>
         <result column="file_Name" property="fileName"/>
         <result column="file_url" property="fileUrl"/>
+        <result column="file_path" property="filePath"/>
         <result column="business_id" property="businessId"/>
         <result column="business_type" property="businessType"/>
     </resultMap>
 <!--    保存文件-->
     <insert id="saveFile">
         insert into  t_file(
-            file_name,file_url,business_id,business_type ,is_deleted,sort_no,
+            file_name,file_url,file_path,business_id,business_type ,is_deleted,sort_no,
             gmt_create,create_by,gmt_modified,last_modified_by,version
             )
         values
         <foreach collection="files" item="item" separator=",">
-            (#{item.fileName},#{item.fileUrl},#{id},1,0,0,now(),#{createBy},now(),#{lastModifiedBy},1)
+            (#{item.fileName},#{item.fileUrl},#{item.filePath},#{id},1,0,0,now(),#{createBy},now(),#{lastModifiedBy},1)
         </foreach>
     </insert>
 <!--    查询-->
     <select id="listFile" resultMap="fileResult">
-        select id,file_name,file_url,business_id,business_type
+        select id,file_name,file_url,file_path,business_id,business_type
         from t_file
         where business_id = #{businessId}
+        and business_type = #{businessType}
     </select>
-
-<!--    修改图片-->
-<!--    <update id="updateFile">-->
-<!--        update t_file-->
-<!--        set file_url=#{fileUrl}-->
-<!--        where business_id = #{id}-->
-<!--    </update>-->
+<!--  根据 id 删除-->
+    <delete id="deleteFile">
+        delete from t_file
+        where id = #{id}
+    </delete>
+<!--    根据 商品 删除-->
+    <delete id="delFileByGoods">
+        delete from t_file
+        where business_id = #{id}
+        and business_type = #{goodsType}
+    </delete>
 </mapper>
