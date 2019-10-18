@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -116,6 +117,7 @@ public class GoodsServiceImpl implements GoodsService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Response updateGoods(Goods goods) {
         //判断名字重复
         int resultcount = goodsMapper.existName(goods);
@@ -158,6 +160,7 @@ public class GoodsServiceImpl implements GoodsService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Response delGoods(Goods goods) {
         //id是否为空
         if (null == goods.getId()) {

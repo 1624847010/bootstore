@@ -61,4 +61,8 @@ public class Goods extends PageReqest {
     private List<File> files;
 
     private Integer flag;
+
+    private String oneCateName;
+
+    private String twoCateName;
 }
